@@ -1,6 +1,7 @@
 package connector
 
 import (
+	"AdaptixServer/core/database"
 	"AdaptixServer/core/profile"
 	"AdaptixServer/core/utils/krypt"
 	"AdaptixServer/core/utils/logs"
@@ -124,6 +125,10 @@ type Teamserver interface {
 	TsTunnelConnectionHalt(channelId int, errorCode byte)
 	TsTunnelConnectionResume(AgentId string, channelId int, ioDirect bool)
 	TsTunnelConnectionData(channelId int, data []byte)
+
+	TsHostedUpload(username string, slug string, fileName string, mimeType string, content []byte) (database.HostedFileData, error)
+	TsHostedList() (string, error)
+	TsHostedDelete(fileIds []string) error
 
 	TsServiceLoad(configPath string) error
 	TsServiceUnload(serviceName string) error
@@ -400,6 +405,10 @@ func NewTsConnector(ts Teamserver, tsProfile profile.TsProfile, httpServer profi
 		//api_group.POST("/service/load", connector.TcServiceLoad)
 		//api_group.POST("/service/unload", connector.TcServiceUnload)
 		api_group.POST("/service/call", connector.TcServiceCall)
+
+		api_group.POST("/hosted/upload", connector.TcHostedUpload)
+		api_group.GET("/hosted/list", connector.TcHostedList)
+		api_group.POST("/hosted/delete", connector.TcHostedDelete)
 
 		//api_group.POST("/axscript/list", connector.TcAxScriptList)
 		//api_group.POST("/axscript/commands", connector.TcAxScriptCommands)

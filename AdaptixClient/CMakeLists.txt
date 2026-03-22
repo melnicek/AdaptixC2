@@ -118,6 +118,7 @@ SET( HEADERS
         Headers/Workers/LastTickWorker.h
         Headers/Agent/Commander.h
         Headers/UI/Widgets/DownloadsWidget.h
+        Headers/UI/Widgets/HostedFilesWidget.h
         Headers/UI/Widgets/BrowserFilesWidget.h
         Headers/UI/Widgets/BrowserProcessWidget.h
         Headers/UI/Widgets/TasksWidget.h
@@ -209,6 +210,7 @@ add_executable(AdaptixClient
         Source/Workers/LastTickWorker.cpp
         Source/Agent/Commander.cpp
         Source/UI/Widgets/DownloadsWidget.cpp
+        Source/UI/Widgets/HostedFilesWidget.cpp
         Source/UI/Widgets/BrowserFilesWidget.cpp
         Source/UI/Widgets/BrowserProcessWidget.cpp
         Source/UI/Widgets/TasksWidget.cpp

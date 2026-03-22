@@ -1,6 +1,8 @@
 #include <Client/Requestor.h>
 #include <Client/AuthProfile.h>
 #include <Client/HttpRequestManager.h>
+#include <QHttpMultiPart>
+#include <QSslConfiguration>
 
 QJsonObject HttpReq(const QString &sUrl, const QByteArray &jsonData, const QString &token, const int timeout)
 {
@@ -492,4 +494,54 @@ void HttpReqAxScriptUnloadAsync(const QString &name, AuthProfile& profile, const
     QByteArray jsonData = QJsonDocument(dataJson).toJson();
 
     HttpRequestManager::instance().post(profile.GetURL(), "/axscript/unload", profile.GetAccessToken(), jsonData, callback);
+}
+
+void HttpReqHostedUploadAsync(const QString &fileName, const QByteArray &content, AuthProfile& profile, const HttpCallback &callback)
+{
+    auto *multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
+
+    QHttpPart filePart;
+    filePart.setHeader(QNetworkRequest::ContentDispositionHeader,
+        QVariant(QString("form-data; name=\"file\"; filename=\"%1\"").arg(fileName)));
+    filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/octet-stream"));
+    filePart.setBody(content);
+    multiPart->append(filePart);
+
+    QHttpPart slugPart;
+    slugPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"slug\""));
+    slugPart.setBody(fileName.toUtf8());
+    multiPart->append(slugPart);
+
+    QUrl url(profile.GetURL() + "/hosted/upload");
+    QNetworkRequest request(url);
+    request.setRawHeader("Authorization", ("Bearer " + profile.GetAccessToken()).toUtf8());
+
+    QSslConfiguration sslConfig = QSslConfiguration::defaultConfiguration();
+    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(sslConfig);
+
+    auto *nam = new QNetworkAccessManager();
+    auto *reply = nam->post(request, multiPart);
+    multiPart->setParent(reply);
+
+    QObject::connect(reply, &QNetworkReply::finished, [reply, nam, callback]() {
+        bool success = (reply->error() == QNetworkReply::NoError);
+        QByteArray responseData = reply->readAll();
+        QJsonObject responseJson = QJsonDocument::fromJson(responseData).object();
+        QString message = responseJson.value("message").toString();
+        if (!success && message.isEmpty())
+            message = reply->errorString();
+        callback(success && responseJson.value("ok").toBool(false), message, responseJson);
+        reply->deleteLater();
+        nam->deleteLater();
+    });
+}
+
+void HttpReqHostedDeleteAsync(const QStringList &fileIds, AuthProfile& profile, const HttpCallback &callback)
+{
+    QJsonObject dataJson;
+    dataJson["file_id_array"] = toJsonArray(fileIds);
+    QByteArray jsonData = QJsonDocument(dataJson).toJson();
+
+    HttpRequestManager::instance().post(profile.GetURL(), "/hosted/delete", profile.GetAccessToken(), jsonData, callback);
 }

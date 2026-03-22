@@ -157,6 +157,9 @@
 #define TYPE_TARGETS_DELETE  0x89
 #define TYPE_TARGETS_SET_TAG 0x8a
 
+#define TYPE_HOSTED_CREATE 0x8b
+#define TYPE_HOSTED_DELETE 0x8d
+
 #define TYPE_AXSCRIPT_COMMANDS 0x91
 
 //////////
@@ -334,6 +337,22 @@ typedef struct TargetData
     bool        Alive;
     QStringList Agents;
 } TargetData;
+
+typedef struct HostedFileData
+{
+    QString FileId;
+    QString Slug;
+    QString FileName;
+    qint64  FileSize;
+    QString MimeType;
+    QString Source;
+    QString SourceMeta;
+    QString Uploader;
+    qint64  Downloads;
+    QString Date;
+    qint64  DateTimestamp = 0;
+    QString URL;
+} HostedFileData;
 
 typedef struct TunnelData
 {

@@ -41,6 +41,8 @@ func getPacketCategory(packet interface{}) string {
 		return SyncCategoryScreenshotHistory
 	case SyncPackerTunnelCreate:
 		return "tunnels"
+	case SyncPackerHostedCreate:
+		return SyncCategoryHostedHistory
 	case SyncPackerPivotCreate:
 		return "pivots"
 	case SyncPackerCredentialsAdd:
@@ -164,6 +166,8 @@ func (ts *Teamserver) TsSyncCategories(client *ClientHandler, categories []strin
 			packets = append(packets, ts.TsPresyncNotifications()...)
 		case SyncCategoryTunnels:
 			packets = append(packets, ts.TsPresyncTunnels()...)
+		case SyncCategoryHostedHistory:
+			packets = append(packets, ts.TsPresyncHosted()...)
 		}
 	}
 

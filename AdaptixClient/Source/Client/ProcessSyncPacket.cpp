@@ -14,6 +14,7 @@
 #include <UI/Widgets/TunnelsWidget.h>
 #include <UI/Widgets/CredentialsWidget.h>
 #include <UI/Widgets/TargetsWidget.h>
+#include <UI/Widgets/HostedFilesWidget.h>
 #include <UI/Widgets/AxConsoleWidget.h>
 #include <UI/Graph/SessionsGraph.h>
 #include <UI/Dialogs/DialogSyncPacket.h>
@@ -114,6 +115,23 @@ namespace {
         data.DateTimestamp = static_cast<qint64>(json["s_date"].toDouble());
         data.Date          = UnixTimestampGlobalToStringLocal(data.DateTimestamp);
         data.Content       = QByteArray::fromBase64(json["s_content"].toString().toUtf8());
+        return data;
+    }
+
+    HostedFileData parseHostedFileData(const QJsonObject &json) {
+        HostedFileData data = {};
+        data.FileId        = json["h_file_id"].toString();
+        data.Slug          = json["h_slug"].toString();
+        data.FileName      = json["h_file_name"].toString();
+        data.FileSize      = static_cast<qint64>(json["h_file_size"].toDouble());
+        data.MimeType      = json["h_mime_type"].toString();
+        data.Source        = json["h_source"].toString();
+        data.SourceMeta    = json["h_source_meta"].toString();
+        data.Uploader      = json["h_uploader"].toString();
+        data.Downloads     = static_cast<qint64>(json["h_downloads"].toDouble());
+        data.DateTimestamp = static_cast<qint64>(json["h_date"].toDouble());
+        data.Date          = UnixTimestampGlobalToStringLocal(data.DateTimestamp);
+        data.URL           = json["h_url"].toString();
         return data;
     }
 
@@ -415,6 +433,21 @@ bool AdaptixWidget::isValidSyncPacket(QJsonObject jsonObj)
 
     case TYPE_SCREEN_DELETE:
         return checkField("s_screen_id", isStr);
+
+    case TYPE_HOSTED_CREATE:
+        return checkField("h_file_id", isStr) &&
+               checkField("h_slug", isStr) &&
+               checkField("h_file_name", isStr) &&
+               checkField("h_file_size", isNum) &&
+               checkField("h_mime_type", isStr) &&
+               checkField("h_source", isStr) &&
+               checkField("h_uploader", isStr) &&
+               checkField("h_downloads", isNum) &&
+               checkField("h_date", isNum) &&
+               checkField("h_url", isStr);
+
+    case TYPE_HOSTED_DELETE:
+        return checkField("h_file_id", isStr);
 
     case TYPE_CREDS_CREATE:
         return checkField("c_creds", isArr);
@@ -812,6 +845,14 @@ void AdaptixWidget::processSyncPacket(QJsonObject jsonObj)
 
     case TYPE_SCREEN_DELETE:
         ScreenshotsDock->RemoveScreenshotItem(jsonObj["s_screen_id"].toString());
+        break;
+
+    case TYPE_HOSTED_CREATE:
+        HostedFilesDock->AddHostedItem(parseHostedFileData(jsonObj));
+        break;
+
+    case TYPE_HOSTED_DELETE:
+        HostedFilesDock->RemoveHostedItem(jsonObj["h_file_id"].toString());
         break;
 
     case TYPE_CREDS_CREATE: {

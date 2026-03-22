@@ -777,3 +777,27 @@ type AxCommandBatch struct {
 	Os       int    `json:"os"`
 	Commands string `json:"commands"`
 }
+
+/// HOSTED FILES
+
+type SyncPackerHostedCreate struct {
+	SpType int `json:"type"`
+
+	FileId     string `json:"h_file_id"`
+	Slug       string `json:"h_slug"`
+	FileName   string `json:"h_file_name"`
+	FileSize   int64  `json:"h_file_size"`
+	MimeType   string `json:"h_mime_type"`
+	Source     string `json:"h_source"`
+	SourceMeta string `json:"h_source_meta"`
+	Uploader   string `json:"h_uploader"`
+	Downloads  int64  `json:"h_downloads"`
+	Date       int64  `json:"h_date"`
+	URL        string `json:"h_url"`
+}
+
+type SyncPackerHostedDelete struct {
+	SpType int `json:"type"`
+
+	FileId string `json:"h_file_id"`
+}

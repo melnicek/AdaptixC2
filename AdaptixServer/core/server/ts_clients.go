@@ -152,7 +152,8 @@ func (ts *Teamserver) TsClientSubscribe(username string, categories []string, co
 				SyncCategoryDownloadsRealtime,
 				SyncCategoryScreenshotRealtime,
 				SyncCategoryCredentialsRealtime,
-				SyncCategoryTargetsRealtime:
+				SyncCategoryTargetsRealtime,
+				SyncCategoryHostedRealtime:
 			default:
 				newCategories = append(newCategories, category)
 			}

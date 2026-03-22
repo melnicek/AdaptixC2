@@ -1,6 +1,7 @@
 package server
 
 import (
+	"AdaptixServer/core/database"
 	"time"
 
 	"github.com/Adaptix-Framework/axc2"
@@ -87,6 +88,9 @@ const (
 	TYPE_TARGETS_SET_TAG = 0x8a
 
 	TYPE_AXSCRIPT_COMMANDS = 0x91
+
+	TYPE_HOSTED_CREATE = 0x8b
+	TYPE_HOSTED_DELETE = 0x8d
 )
 
 func CreateSpNotification(notifyType int, message string) SpNotification {
@@ -763,5 +767,31 @@ func CreateSpAxScriptData(name string, content string, groups []AxCommandBatch) 
 		Name:    name,
 		Content: content,
 		Groups:  groups,
+	}
+}
+
+/// HOSTED FILES
+
+func CreateSpHostedCreate(data database.HostedFileData, url string) SyncPackerHostedCreate {
+	return SyncPackerHostedCreate{
+		SpType:     TYPE_HOSTED_CREATE,
+		FileId:     data.FileId,
+		Slug:       data.Slug,
+		FileName:   data.FileName,
+		FileSize:   data.FileSize,
+		MimeType:   data.MimeType,
+		Source:     data.Source,
+		SourceMeta: data.SourceMeta,
+		Uploader:   data.Uploader,
+		Downloads:  data.Downloads,
+		Date:       data.Date,
+		URL:        url,
+	}
+}
+
+func CreateSpHostedDelete(fileId string) SyncPackerHostedDelete {
+	return SyncPackerHostedDelete{
+		SpType: TYPE_HOSTED_DELETE,
+		FileId: fileId,
 	}
 }

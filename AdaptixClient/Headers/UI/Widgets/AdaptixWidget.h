@@ -33,6 +33,7 @@ class CredentialsWidget;
 class TargetsWidget;
 class TasksWidget;
 class TunnelsWidget;
+class HostedFilesWidget;
 class TunnelEndpoint;
 class DialogSyncPacket;
 class AuthProfile;
@@ -80,6 +81,7 @@ Q_OBJECT
     QPushButton*    downloadsButton   = nullptr;
     QPushButton*    credsButton       = nullptr;
     QPushButton*    screensButton     = nullptr;
+    QPushButton*    hostedButton      = nullptr;
     QPushButton*    keysButton        = nullptr;
     QPushButton*    reconnectButton   = nullptr;
     oclero::qlementine::PopoverButton* extDocksButton = nullptr;
@@ -142,6 +144,7 @@ public:
     CredentialsWidget*   CredentialsDock   = nullptr;
     TasksWidget*         TasksDock         = nullptr;
     TargetsWidget*       TargetsDock       = nullptr;
+    HostedFilesWidget*   HostedFilesDock   = nullptr;
 
     QVector<RegListenerConfig>       RegisterListeners;
     QVector<RegAgentConfig>          RegisterAgents;
@@ -152,6 +155,8 @@ public:
     QMap<QString, ScreenData>        Screenshots;
     QVector<CredentialData>          Credentials;
     QVector<TargetData>              Targets;
+    QMap<QString, HostedFileData>    HostedFiles;
+    mutable QReadWriteLock           HostedFilesLock;
     QMap<QString, PivotData>         Pivots;
     QMap<QString, TaskData>          TasksMap;
     QMap<QString, Agent*>            AgentsMap;
@@ -256,6 +261,7 @@ public Q_SLOTS:
     void LoadScreenshotsUI() const;
     void LoadCredentialsUI() const;
     void LoadTargetsUI() const;
+    void LoadHostedFilesUI() const;
     void OnReconnect();
 };
 

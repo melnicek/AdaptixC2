@@ -63,6 +63,8 @@ const (
 	SyncCategoryTargetsRealtime     = "targets_realtime"
 	SyncCategoryNotifications       = "notifications"
 	SyncCategoryTunnels             = "tunnels"
+	SyncCategoryHostedHistory       = "hosted_history"
+	SyncCategoryHostedRealtime      = "hosted_realtime"
 )
 
 const (

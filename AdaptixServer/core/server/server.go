@@ -18,6 +18,8 @@ import (
 	"github.com/goccy/go-yaml"
 )
 
+const SMALL_VERSION = connector.SMALL_VERSION
+
 func NewTeamserver() *Teamserver {
 
 	dbms, err := database.NewDatabase(logs.RepoLogsInstance.DbPath)
@@ -221,6 +223,7 @@ func (ts *Teamserver) Start() {
 	logs.Success("", "Starting server -> https://%s:%v%s", ts.Profile.Server.Interface, ts.Profile.Server.Port, ts.Profile.Server.Endpoint)
 
 	ts.RestoreData()
+	ts.TsHostedInit()
 	logs.Success("", "The AdaptixC2 server is ready")
 
 	go ts.TsAgentTickUpdate()

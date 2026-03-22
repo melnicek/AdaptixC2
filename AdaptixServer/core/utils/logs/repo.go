@@ -13,6 +13,7 @@ type RepoLogs struct {
 	DownloadPath   string
 	UploadPath     string
 	ScreenshotPath string
+	HostedPath     string
 }
 
 var RepoLogsInstance *RepoLogs
@@ -28,6 +29,7 @@ func NewRepoLogs() (*RepoLogs, error) {
 		DownloadPath:   path + "/data/download",
 		UploadPath:     path + "/data/tmp_upload",
 		ScreenshotPath: path + "/data/screenshot",
+		HostedPath:     path + "/data/hosted",
 	}
 
 	_, err = os.Stat(repologs.DataPath)
@@ -68,6 +70,14 @@ func NewRepoLogs() (*RepoLogs, error) {
 		err = os.Mkdir(repologs.ScreenshotPath, os.ModePerm)
 		if err != nil {
 			return nil, fmt.Errorf("failed to create %s folder: %s", repologs.ScreenshotPath, err.Error())
+		}
+	}
+
+	_, err = os.Stat(repologs.HostedPath)
+	if os.IsNotExist(err) {
+		err = os.Mkdir(repologs.HostedPath, os.ModePerm)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create %s folder: %s", repologs.HostedPath, err.Error())
 		}
 	}
 

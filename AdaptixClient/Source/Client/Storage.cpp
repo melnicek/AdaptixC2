@@ -162,6 +162,7 @@ QVector<AuthProfile> Storage::ListProjects()
                     "screenshot_history", "screenshot_realtime",
                     "credentials_history", "credentials_realtime",
                     "targets_history", "targets_realtime",
+                    "hosted_history", "hosted_realtime",
                     "notifications", "tunnels",
                     "agents_only_active",
                     "console_history",

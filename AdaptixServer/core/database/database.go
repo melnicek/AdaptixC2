@@ -226,6 +226,21 @@ func (dbms *DBMS) DatabaseInit() error {
     );`
 	_, err = dbms.database.Exec(createTableQuery)
 
+	createTableQuery = `CREATE TABLE IF NOT EXISTS "HostedFiles" (
+    	"FileId" TEXT NOT NULL UNIQUE,
+    	"Slug" TEXT NOT NULL UNIQUE,
+    	"FileName" TEXT NOT NULL,
+    	"LocalPath" TEXT NOT NULL,
+    	"FileSize" BIGINT,
+    	"MimeType" TEXT DEFAULT 'application/octet-stream',
+    	"Source" TEXT NOT NULL,
+    	"SourceMeta" TEXT,
+    	"Uploader" TEXT,
+    	"Downloads" BIGINT DEFAULT 0,
+    	"Date" BIGINT
+    );`
+	_, err = dbms.database.Exec(createTableQuery)
+
 	createTableQuery = `CREATE TABLE IF NOT EXISTS "ExtenderData" (
 		"Id" INTEGER PRIMARY KEY AUTOINCREMENT,
     	"ExtenderName" TEXT NOT NULL,
@@ -251,6 +266,8 @@ func (dbms *DBMS) DatabaseInit() error {
 		`CREATE INDEX IF NOT EXISTS idx_targets_computer_domain ON Targets(Computer, Domain);`,
 		`CREATE INDEX IF NOT EXISTS idx_pivots_parentagentid ON Pivots(ParentAgentId);`,
 		`CREATE INDEX IF NOT EXISTS idx_pivots_childagentid ON Pivots(ChildAgentId);`,
+		`CREATE INDEX IF NOT EXISTS idx_hosted_slug ON HostedFiles(Slug);`,
+		`CREATE INDEX IF NOT EXISTS idx_hosted_date ON HostedFiles(Date);`,
 	}
 	for _, indexQuery := range indexQueries {
 		_, _ = dbms.database.Exec(indexQuery)
@@ -269,7 +286,7 @@ func (dbms *DBMS) DbTableCount(table string) int {
 	}
 	allowed := map[string]bool{
 		"Screenshots": true, "Tasks": true, "Consoles": true,
-		"Downloads": true, "Credentials": true, "Targets": true, "Chat": true,
+		"Downloads": true, "Credentials": true, "Targets": true, "Chat": true, "HostedFiles": true,
 	}
 	if !allowed[table] {
 		return 0

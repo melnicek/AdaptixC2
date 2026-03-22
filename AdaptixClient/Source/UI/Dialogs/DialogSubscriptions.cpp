@@ -52,7 +52,7 @@ void DialogSubscriptions::createUI()
     realtimeListWidget->setSelectionMode(QAbstractItemView::NoSelection);
 
     historyListWidget->addItem(makeSectionHeader("Data"));
-    for (const QString &cat : {"chat_history", "downloads_history", "screenshot_history", "credentials_history", "targets_history"}) {
+    for (const QString &cat : {"chat_history", "downloads_history", "screenshot_history", "credentials_history", "targets_history", "hosted_history"}) {
         auto *item = new QListWidgetItem(cat);
         item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
         item->setCheckState(Qt::Unchecked);
@@ -67,7 +67,7 @@ void DialogSubscriptions::createUI()
     }
 
     realtimeListWidget->addItem(makeSectionHeader("Data"));
-    for (const QString &cat : {"chat_realtime", "downloads_realtime", "screenshot_realtime", "credentials_realtime", "targets_realtime", "notifications", "tunnels"}) {
+    for (const QString &cat : {"chat_realtime", "downloads_realtime", "screenshot_realtime", "credentials_realtime", "targets_realtime", "hosted_realtime", "notifications", "tunnels"}) {
         auto *item = new QListWidgetItem(cat);
         item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
         item->setCheckState(Qt::Unchecked);

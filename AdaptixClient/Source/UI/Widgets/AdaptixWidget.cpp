@@ -19,6 +19,7 @@
 #include <UI/Widgets/ScreenshotsWidget.h>
 #include <UI/Widgets/CredentialsWidget.h>
 #include <UI/Widgets/TargetsWidget.h>
+#include <UI/Widgets/HostedFilesWidget.h>
 #include <UI/Widgets/TasksWidget.h>
 #include <UI/Widgets/TunnelsWidget.h>
 #include <UI/Graph/SessionsGraph.h>
@@ -62,6 +63,7 @@ AdaptixWidget::AdaptixWidget(AuthProfile* authProfile, QThread* channelThread, W
     ScreenshotsDock   = new ScreenshotsWidget(this);
     CredentialsDock   = new CredentialsWidget(this);
     TargetsDock       = new TargetsWidget(this);
+    HostedFilesDock   = new HostedFilesWidget(this);
 
     dockTop->toggleAction()->trigger();
     this->PlaceDock( dockTop, SessionsTableDock->dock() );
@@ -86,6 +88,7 @@ AdaptixWidget::AdaptixWidget(AuthProfile* authProfile, QThread* channelThread, W
     connect( screensButton,   &QPushButton::clicked, this, &AdaptixWidget::LoadScreenshotsUI);
     connect( credsButton,     &QPushButton::clicked, this, &AdaptixWidget::LoadCredentialsUI);
     connect( targetsButton,   &QPushButton::clicked, this, &AdaptixWidget::LoadTargetsUI);
+    connect( hostedButton,    &QPushButton::clicked, this, &AdaptixWidget::LoadHostedFilesUI);
     connect( reconnectButton, &QPushButton::clicked, this, &AdaptixWidget::OnReconnect);
 
     connect( TickThread, &QThread::started, TickWorker, &LastTickWorker::run );
@@ -324,6 +327,11 @@ void AdaptixWidget::createUI()
     screensButton->setFixedSize(37, 28);
     screensButton->setToolTip("Screens");
 
+    hostedButton = new QPushButton( QIcon(":/icons/downloads"), "", this );
+    hostedButton->setIconSize( QSize( 24,24 ));
+    hostedButton->setFixedSize(37, 28);
+    hostedButton->setToolTip("Hosted Files");
+
     keysButton = new QPushButton( QIcon(":/icons/keyboard"), "", this );
     keysButton->setIconSize( QSize( 24,24 ));
     keysButton->setFixedSize(37, 28);
@@ -389,6 +397,7 @@ void AdaptixWidget::createUI()
     topHLayout->addWidget(targetsButton);
     topHLayout->addWidget(credsButton);
     topHLayout->addWidget(screensButton);
+    topHLayout->addWidget(hostedButton);
     topHLayout->addWidget(keysButton);
     topHLayout->addWidget(line_4);
     topHLayout->addWidget(reconnectButton);
@@ -1287,6 +1296,8 @@ void AdaptixWidget::LoadScreenshotsUI() const { this->PlaceDock(dockBottom, Scre
 void AdaptixWidget::LoadCredentialsUI() const { this->PlaceDock(dockBottom, CredentialsDock->dock() ); }
 
 void AdaptixWidget::LoadTargetsUI() const { this->PlaceDock(dockBottom, TargetsDock->dock() ); }
+
+void AdaptixWidget::LoadHostedFilesUI() const { this->PlaceDock(dockBottom, HostedFilesDock->dock() ); }
 
 void AdaptixWidget::OnReconnect()
 {
